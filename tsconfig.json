@@ -2,7 +2,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "react-native-switch": ["./src/index"]
+      "@meksiabdou/react-native-switch": ["./src/index"]
     },
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,

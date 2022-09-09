@@ -1,3 +1,4 @@
-export function multiply(a: number, b: number): Promise<number> {
-  return Promise.resolve(a * b);
-}
+import Switch from './components/switch';
+
+export type { SwitchProps } from './types/index';
+export default Switch;

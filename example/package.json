@@ -1,5 +1,5 @@
 {
-  "name": "react-native-switch-example",
+  "name": "@meksiabdou/react-native-switch-example",
   "description": "Example app for react-native-switch",
   "version": "0.0.1",
   "private": true,
@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "react": "17.0.2",
-    "react-native": "0.68.2"
+    "react-native": "0.68.2",
+    "react-native-reanimated": "^2.9.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",

@@ -3,17 +3,12 @@ react-native switch
 ## Installation
 
 ```sh
-npm install react-native-switch
+yarn add @meksiabdou/react-native-switch
 ```
 
 ## Usage
 
-```js
-import { multiply } from "react-native-switch";
-
-// ...
-
-const result = await multiply(3, 7);
+```ts
 ```
 
 ## Contributing
