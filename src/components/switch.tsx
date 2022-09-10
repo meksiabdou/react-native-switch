@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import Reanimated, {
   useAnimatedStyle,
@@ -10,6 +10,9 @@ import type { SwitchProps } from '../types';
 const TouchableAnimated = Reanimated.createAnimatedComponent(
   TouchableWithoutFeedback
 );
+
+const spring = (_value: any, config: any = { damping: 20, stiffness: 120 }) =>
+  withSpring(_value, config);
 
 const PADDINGHORIZONTAL = 2;
 
@@ -30,13 +33,20 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
     disabled,
   } = IProps;
 
-  const defaultCircleSize = circleSize || 30;
   const circleTranslateX = useSharedValue<any>(0);
-  const textTranslateX = useSharedValue<any>(0);
+  const textTranslateXInActive = useSharedValue<any>(0);
+  const textTranslateXActive = useSharedValue<any>(0);
+  const opacity = useSharedValue<number>(1);
+  const circleColor = useSharedValue<string>(circleInActiveColor);
+
+  const [defaultWidth, setDefaultWidth] = useState<number>(width || 100);
+  const [defaultCircleSize, setDefaultCircleSize] = useState<number>(
+    circleSize || 30
+  );
 
   const circleStyle = useAnimatedStyle(() => {
     return {
-      //backgroundColor: circleColor.value,
+      backgroundColor: circleColor.value,
       transform: [
         {
           translateX: circleTranslateX.value,
@@ -45,31 +55,74 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
     };
   });
 
-  const TextStyle = useAnimatedStyle(() => {
+  const textStyleViewInActive = useAnimatedStyle(() => {
     return {
       transform: [
         {
-          translateX: textTranslateX.value,
+          translateX: textTranslateXInActive.value,
         },
       ],
     };
   });
 
-  const spring = (_value: any) =>
-    withSpring(_value, { damping: 15, stiffness: 120 });
+  const textStyleViewActive = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          translateX: textTranslateXActive.value,
+        },
+      ],
+    };
+  });
+
+  const switchStyle = useAnimatedStyle(() => {
+    return {
+      opacity: opacity.value,
+    };
+  });
 
   useEffect(() => {
-    if (width && typeof width === 'number' && !disabled) {
-      const size = (width || 100) - (defaultCircleSize + PADDINGHORIZONTAL * 2);
+    if (width && typeof width === 'number') {
+      setDefaultWidth(width);
+    }
+  }, [width]);
+
+  useEffect(() => {
+    if (circleSize && typeof circleSize === 'number') {
+      setDefaultCircleSize(circleSize);
+    }
+  }, [circleSize]);
+
+  useEffect(() => {
+    if (defaultWidth && typeof defaultWidth === 'number') {
+      const size = defaultWidth - (defaultCircleSize + PADDINGHORIZONTAL * 2);
       if (value) {
-        circleTranslateX.value = spring(size);
-        textTranslateX.value = spring(-defaultCircleSize);
+        circleTranslateX.value = spring(size, { damping: 15, stiffness: 120 });
+        textTranslateXActive.value = spring(0);
+        textTranslateXInActive.value = spring(defaultWidth);
+        circleColor.value = spring(circleActiveColor, {
+          damping: 20,
+          stiffness: 100,
+        });
       } else {
-        circleTranslateX.value = spring(PADDINGHORIZONTAL / 2);
-        textTranslateX.value = spring(0);
+        circleTranslateX.value = spring(0, { damping: 15, stiffness: 120 });
+        textTranslateXActive.value = spring(-defaultWidth);
+        textTranslateXInActive.value = spring(0);
+        circleColor.value = spring(circleInActiveColor, {
+          damping: 20,
+          stiffness: 100,
+        });
       }
     }
-  }, [value]);
+  }, [value, defaultWidth, defaultCircleSize]);
+
+  useEffect(() => {
+    if (disabled) {
+      opacity.value = spring(0.8);
+    } else {
+      opacity.value = spring(1);
+    }
+  }, [disabled]);
 
   return (
     <TouchableAnimated
@@ -85,29 +138,74 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
           {
             borderRadius: switchBorderRadius,
             width: width,
-            backgroundColor: value ? backgroundActive : backgroundInActive,
-            opacity: disabled ? 0.8 : 1,
           },
+          switchStyle,
         ]}
       >
         <Reanimated.View
           style={[
             {
               position: 'relative',
-              zIndex: 1,
-              width: circleSize,
-              height: circleSize,
+              zIndex: 99,
+              width: defaultCircleSize,
+              height: defaultCircleSize,
               borderRadius: switchBorderRadius,
-              backgroundColor: value ? circleActiveColor : circleInActiveColor,
             },
             circleStyle,
           ]}
         />
         <Reanimated.View
-          style={[{ position: 'relative', marginHorizontal: 2 }, TextStyle]}
+          style={[
+            {
+              position: 'absolute',
+              display: 'flex',
+              right: 0,
+              left: 0,
+              top: 0,
+              bottom: 0,
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: defaultWidth + PADDINGHORIZONTAL,
+              backgroundColor: backgroundActive,
+            },
+            textStyleViewActive,
+          ]}
         >
-          <Reanimated.Text style={[styles.textStyle, textStyle]}>
-            {value ? activeText : inActiveText}
+          <Reanimated.Text
+            style={[
+              styles.textStyle,
+              textStyle,
+              { left: -(defaultCircleSize / 2) },
+            ]}
+          >
+            {activeText}
+          </Reanimated.Text>
+        </Reanimated.View>
+        <Reanimated.View
+          style={[
+            {
+              position: 'absolute',
+              display: 'flex',
+              left: 0,
+              right: 0,
+              top: 0,
+              bottom: 0,
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: defaultWidth,
+              backgroundColor: backgroundInActive,
+            },
+            textStyleViewInActive,
+          ]}
+        >
+          <Reanimated.Text
+            style={[
+              styles.textStyle,
+              textStyle,
+              { left: defaultCircleSize / 2 },
+            ]}
+          >
+            {inActiveText}
           </Reanimated.Text>
         </Reanimated.View>
       </Reanimated.View>
@@ -121,9 +219,9 @@ Switch.defaultProps = {
   activeText: 'on',
   inActiveText: 'off',
   backgroundActive: '#249c00',
-  backgroundInActive: '#b5b5b5',
+  backgroundInActive: '#333',
   circleActiveColor: '#fff',
-  circleInActiveColor: '#000',
+  circleInActiveColor: '#fff',
   circleSize: 30,
   switchBorderRadius: 30,
   width: 100,
@@ -136,8 +234,10 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     position: 'relative',
+    backgroundColor: '#fff',
+    overflow: 'hidden',
   },
   textStyle: {
     fontSize: 14,

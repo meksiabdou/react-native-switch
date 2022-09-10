@@ -10,10 +10,13 @@ export default function App() {
       <View>
         <Switch
           value={value['0']}
-          width={90}
+          width={75}
           onValueChange={(_value) => setValue({ ...value, 0: _value })}
-          activeText="Halal"
-          inActiveText="Haram"
+          activeText="حلال"
+          inActiveText="حرام"
+          backgroundInActive={"#ff0000"}
+          circleInActiveColor={"#fff"}
+          circleSize={25}
         />
       </View>
       <View style={{ marginVertical: 5 }}>
@@ -32,9 +35,9 @@ export default function App() {
           onValueChange={(_value) => setValue({ ...value, 2: _value })}
           activeText="ON"
           inActiveText="OFF"
-          circleSize={25}
+          circleSize={24}
           textStyle={{ fontSize: 13 }}
-          disabled
+          disabled={false}
         />
       </View>
     </View>
@@ -46,5 +49,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: "#ccc",
   },
 });

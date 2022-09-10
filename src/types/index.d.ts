@@ -1,10 +1,9 @@
-import type { TextStyle } from "react-native";
-
+import type { TextStyle } from 'react-native';
 
 export interface SwitchProps {
   disabled?: boolean;
   value: boolean;
-  onValueChange?: (value : boolean) => void;
+  onValueChange?: (value: boolean) => void;
   width?: number;
   activeText?: string;
   inActiveText?: string;
@@ -14,5 +13,5 @@ export interface SwitchProps {
   backgroundInActive?: any;
   circleActiveColor?: any;
   circleInActiveColor?: any;
-  textStyle?: TextStyle,
+  textStyle?: TextStyle;
 }
