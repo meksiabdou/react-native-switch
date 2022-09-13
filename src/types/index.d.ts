@@ -9,9 +9,9 @@ export interface SwitchProps {
   inActiveText?: string;
   circleSize?: number;
   switchBorderRadius?: number;
-  backgroundActive?: any;
-  backgroundInActive?: any;
-  circleActiveColor?: any;
-  circleInActiveColor?: any;
+  backgroundActive?: string;
+  backgroundInActive?: string;
+  circleActiveColor?: string;
+  circleInActiveColor?: string;
   textStyle?: TextStyle;
 }

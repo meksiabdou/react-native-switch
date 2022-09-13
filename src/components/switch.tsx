@@ -37,7 +37,7 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
   const textTranslateXInActive = useSharedValue<any>(0);
   const textTranslateXActive = useSharedValue<any>(0);
   const opacity = useSharedValue<number>(1);
-  const circleColor = useSharedValue<string>(circleInActiveColor);
+  const circleColor = useSharedValue<string | undefined>(circleInActiveColor);
 
   const [defaultWidth, setDefaultWidth] = useState<number>(width || 100);
   const [defaultCircleSize, setDefaultCircleSize] = useState<number>(
@@ -100,18 +100,22 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
         circleTranslateX.value = spring(size, { damping: 15, stiffness: 120 });
         textTranslateXActive.value = spring(0);
         textTranslateXInActive.value = spring(defaultWidth);
-        circleColor.value = spring(circleActiveColor, {
-          damping: 20,
-          stiffness: 100,
-        });
+        if (circleActiveColor) {
+          circleColor.value = spring(circleActiveColor, {
+            damping: 20,
+            stiffness: 100,
+          });
+        }
       } else {
         circleTranslateX.value = spring(0, { damping: 15, stiffness: 120 });
         textTranslateXActive.value = spring(-defaultWidth);
         textTranslateXInActive.value = spring(0);
-        circleColor.value = spring(circleInActiveColor, {
-          damping: 20,
-          stiffness: 100,
-        });
+        if (circleInActiveColor) {
+          circleColor.value = spring(circleInActiveColor, {
+            damping: 20,
+            stiffness: 100,
+          });
+        }
       }
     }
   }, [value, defaultWidth, defaultCircleSize]);
@@ -216,8 +220,9 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
 Switch.defaultProps = {
   disabled: false,
   value: false,
-  activeText: 'on',
-  inActiveText: 'off',
+  onValueChange: undefined,
+  activeText: 'ON',
+  inActiveText: 'OFF',
   backgroundActive: '#249c00',
   backgroundInActive: '#333',
   circleActiveColor: '#fff',
