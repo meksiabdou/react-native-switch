@@ -1,4 +1,4 @@
-import type { TextStyle } from 'react-native';
+import type { TextStyle, ViewStyle } from 'react-native';
 
 export interface SwitchProps {
   disabled?: boolean;
@@ -14,4 +14,7 @@ export interface SwitchProps {
   circleActiveColor?: string;
   circleInActiveColor?: string;
   textStyle?: TextStyle;
+  switchStyle?: ViewStyle;
+  switchPaddingRight?: number;
+  switchPaddingLeft?: number;
 }

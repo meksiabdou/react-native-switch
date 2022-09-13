@@ -22,10 +22,14 @@ export default function App() {
       <View style={{ marginVertical: 5 }}>
         <Switch
           value={value['1']}
-          width={120}
+          width={140}
           onValueChange={(_value) => setValue({ ...value, 1: _value })}
           activeText="Accepted"
           inActiveText="Unaccepted"
+          switchBorderRadius={30}
+          switchPaddingLeft={2}
+          switchPaddingRight={2}
+          switchStyle={{paddingVertical: 4}}
         />
       </View>
       <View>

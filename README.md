@@ -8,6 +8,8 @@ Customisable switch component for React Native
 ![license](https://badgen.net/github/license/meksiabdou/react-native-switch)
 [![Known Vulnerabilities](https://snyk.io/test/github/meksiabdou/react-native-switch/badge.svg?targetFile=package.json)](https://snyk.io/test/github/meksiabdou/react-native-switch?targetFile=package.json)
 
+[![Watch the video](https://imgur.com/TNLNDgt.jpg)](https://i.imgur.com/TNLNDgt.mp4)
+
 ## Requirements
 
 - [react-native-reanimated v2.2.0 or higher](https://github.com/software-mansion/react-native-reanimated)
@@ -71,11 +73,14 @@ const styles = StyleSheet.create({
 | inActiveText        | string    | OFF       |
 | circleSize          | number    | 30        |
 | switchBorderRadius  | number    | 30        |
+| switchPaddingRight  | number    | 2         |
+| switchPaddingLeft   | number    | 2         |
 | backgroundActive    | string    | #249c00   |
 | backgroundInActive  | string    | #333      |
 | circleActiveColor   | string    | #fff      |
 | circleInActiveColor | string    | #fff      |
 | textStyle           | TextStyle | undefined |
+| switchStyle         | ViewStyle | undefined |
 
 ## Contributing
 

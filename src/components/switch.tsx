@@ -16,6 +16,14 @@ const spring = (_value: any, config: any = { damping: 20, stiffness: 120 }) =>
 
 const PADDINGHORIZONTAL = 2;
 
+const isNumbre = (value: any, defaultValue = 0) => {
+  value = Number(value);
+  if (typeof value === 'number' && !isNaN(value) && value !== null) {
+    return value;
+  }
+  return defaultValue;
+};
+
 const Switch = (IProps: SwitchProps): JSX.Element => {
   const {
     value,
@@ -31,6 +39,9 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
     switchBorderRadius,
     textStyle,
     disabled,
+    switchPaddingRight,
+    switchPaddingLeft,
+    switchStyle,
   } = IProps;
 
   const circleTranslateX = useSharedValue<any>(0);
@@ -39,10 +50,19 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
   const opacity = useSharedValue<number>(1);
   const circleColor = useSharedValue<string | undefined>(circleInActiveColor);
 
-  const [defaultWidth, setDefaultWidth] = useState<number>(width || 100);
-  const [defaultCircleSize, setDefaultCircleSize] = useState<number>(
-    circleSize || 30
+  const [defaultWidth, setDefaultWidth] = useState<number>(
+    isNumbre(width, 100)
   );
+  const [defaultCircleSize, setDefaultCircleSize] = useState<number>(
+    isNumbre(circleSize, 30)
+  );
+  const [defaultPadding, setDefaultPadding] = useState<{
+    paddingLeft: number;
+    paddingRight: number;
+  }>({
+    paddingLeft: isNumbre(switchPaddingLeft, PADDINGHORIZONTAL),
+    paddingRight: isNumbre(switchPaddingRight, PADDINGHORIZONTAL),
+  });
 
   const circleStyle = useAnimatedStyle(() => {
     return {
@@ -75,50 +95,54 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
     };
   });
 
-  const switchStyle = useAnimatedStyle(() => {
+  const switchAnimatedStyle = useAnimatedStyle(() => {
     return {
       opacity: opacity.value,
     };
   });
 
   useEffect(() => {
-    if (width && typeof width === 'number') {
-      setDefaultWidth(width);
-    }
+    setDefaultWidth(isNumbre(width, 100));
   }, [width]);
 
   useEffect(() => {
-    if (circleSize && typeof circleSize === 'number') {
-      setDefaultCircleSize(circleSize);
-    }
+    setDefaultPadding({
+      paddingLeft: isNumbre(switchPaddingLeft, PADDINGHORIZONTAL),
+      paddingRight: isNumbre(switchPaddingRight, PADDINGHORIZONTAL),
+    });
+  }, [switchPaddingLeft, switchPaddingRight]);
+
+  useEffect(() => {
+    setDefaultCircleSize(isNumbre(circleSize, 30));
   }, [circleSize]);
 
   useEffect(() => {
-    if (defaultWidth && typeof defaultWidth === 'number') {
-      const size = defaultWidth - (defaultCircleSize + PADDINGHORIZONTAL * 2);
-      if (value) {
-        circleTranslateX.value = spring(size, { damping: 15, stiffness: 120 });
-        textTranslateXActive.value = spring(0);
-        textTranslateXInActive.value = spring(defaultWidth);
-        if (circleActiveColor) {
-          circleColor.value = spring(circleActiveColor, {
-            damping: 20,
-            stiffness: 100,
-          });
-        }
-      } else {
-        circleTranslateX.value = spring(0, { damping: 15, stiffness: 120 });
-        textTranslateXActive.value = spring(-defaultWidth);
-        textTranslateXInActive.value = spring(0);
-        if (circleInActiveColor) {
-          circleColor.value = spring(circleInActiveColor, {
-            damping: 20,
-            stiffness: 100,
-          });
-        }
+    const size =
+      defaultWidth -
+      (defaultCircleSize +
+        (defaultPadding.paddingLeft + defaultPadding.paddingRight));
+    if (value) {
+      circleTranslateX.value = spring(size, { damping: 15, stiffness: 120 });
+      textTranslateXActive.value = spring(0);
+      textTranslateXInActive.value = spring(defaultWidth);
+      if (circleActiveColor) {
+        circleColor.value = spring(circleActiveColor, {
+          damping: 20,
+          stiffness: 100,
+        });
+      }
+    } else {
+      circleTranslateX.value = spring(0, { damping: 15, stiffness: 120 });
+      textTranslateXActive.value = spring(-defaultWidth);
+      textTranslateXInActive.value = spring(0);
+      if (circleInActiveColor) {
+        circleColor.value = spring(circleInActiveColor, {
+          damping: 20,
+          stiffness: 100,
+        });
       }
     }
-  }, [value, defaultWidth, defaultCircleSize]);
+  }, [value, defaultWidth, defaultCircleSize, defaultPadding]);
 
   useEffect(() => {
     if (disabled) {
@@ -140,10 +164,12 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
         style={[
           styles.switch,
           {
-            borderRadius: switchBorderRadius,
-            width: width,
+            borderRadius: isNumbre(switchBorderRadius, 30),
+            width: defaultWidth,
           },
           switchStyle,
+          defaultPadding,
+          switchAnimatedStyle,
         ]}
       >
         <Reanimated.View
@@ -153,7 +179,7 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
               zIndex: 99,
               width: defaultCircleSize,
               height: defaultCircleSize,
-              borderRadius: switchBorderRadius,
+              borderRadius: isNumbre(switchBorderRadius, 30),
             },
             circleStyle,
           ]}
@@ -169,7 +195,9 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
               bottom: 0,
               justifyContent: 'center',
               alignItems: 'center',
-              width: defaultWidth + PADDINGHORIZONTAL,
+              width:
+                defaultWidth +
+                (defaultPadding.paddingLeft + defaultPadding.paddingRight) / 2,
               backgroundColor: backgroundActive,
             },
             textStyleViewActive,
@@ -230,12 +258,13 @@ Switch.defaultProps = {
   circleSize: 30,
   switchBorderRadius: 30,
   width: 100,
+  switchPaddingRight: PADDINGHORIZONTAL,
+  switchPaddingLeft: PADDINGHORIZONTAL,
 };
 
 const styles = StyleSheet.create({
   switch: {
     display: 'flex',
-    paddingHorizontal: 2,
     paddingVertical: 2,
     flexDirection: 'row',
     alignItems: 'center',
