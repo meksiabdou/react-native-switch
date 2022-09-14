@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, TouchableWithoutFeedback } from 'react-native';
+import {
+  StyleSheet,
+  TouchableWithoutFeedback,
+  I18nManager,
+} from 'react-native';
 import Reanimated, {
   useAnimatedStyle,
   useSharedValue,
@@ -44,6 +48,7 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
     switchStyle,
   } = IProps;
 
+  const { isRTL } = I18nManager;
   const circleTranslateX = useSharedValue<any>(0);
   const textTranslateXInActive = useSharedValue<any>(0);
   const textTranslateXActive = useSharedValue<any>(0);
@@ -117,14 +122,16 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
   }, [circleSize]);
 
   useEffect(() => {
+    const factory = isRTL ? -1 : 1;
     const size =
-      defaultWidth -
-      (defaultCircleSize +
-        (defaultPadding.paddingLeft + defaultPadding.paddingRight));
+      factory *
+      (defaultWidth -
+        (defaultCircleSize +
+          (defaultPadding.paddingLeft + defaultPadding.paddingRight)));
     if (value) {
       circleTranslateX.value = spring(size, { damping: 15, stiffness: 120 });
       textTranslateXActive.value = spring(0);
-      textTranslateXInActive.value = spring(defaultWidth);
+      textTranslateXInActive.value = spring(factory * defaultWidth);
       if (circleActiveColor) {
         circleColor.value = spring(circleActiveColor, {
           damping: 20,
@@ -133,7 +140,7 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
       }
     } else {
       circleTranslateX.value = spring(0, { damping: 15, stiffness: 120 });
-      textTranslateXActive.value = spring(-defaultWidth);
+      textTranslateXActive.value = spring(-(defaultWidth * factory));
       textTranslateXInActive.value = spring(0);
       if (circleInActiveColor) {
         circleColor.value = spring(circleInActiveColor, {
@@ -142,7 +149,7 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
         });
       }
     }
-  }, [value, defaultWidth, defaultCircleSize, defaultPadding]);
+  }, [value, defaultWidth, defaultCircleSize, defaultPadding, isRTL]);
 
   useEffect(() => {
     if (disabled) {
