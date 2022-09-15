@@ -182,18 +182,6 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
         <Reanimated.View
           style={[
             {
-              position: 'relative',
-              zIndex: 99,
-              width: defaultCircleSize,
-              height: defaultCircleSize,
-              borderRadius: isNumbre(switchBorderRadius, 30),
-            },
-            circleStyle,
-          ]}
-        />
-        <Reanimated.View
-          style={[
-            {
               position: 'absolute',
               display: 'flex',
               right: 0,
@@ -247,6 +235,18 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
             {inActiveText}
           </Reanimated.Text>
         </Reanimated.View>
+        <Reanimated.View
+          style={[
+            {
+              position: 'relative',
+              zIndex: 99,
+              width: defaultCircleSize,
+              height: defaultCircleSize,
+              borderRadius: isNumbre(switchBorderRadius, 30),
+            },
+            circleStyle,
+          ]}
+        />
       </Reanimated.View>
     </TouchableAnimated>
   );
