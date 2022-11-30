@@ -3,6 +3,7 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   I18nManager,
+  View,
 } from 'react-native';
 import Reanimated, {
   useAnimatedStyle,
@@ -10,10 +11,6 @@ import Reanimated, {
   withSpring,
 } from 'react-native-reanimated';
 import type { SwitchProps } from '../types';
-
-const TouchableAnimated = Reanimated.createAnimatedComponent(
-  TouchableWithoutFeedback
-);
 
 const spring = (_value: any, config: any = { damping: 20, stiffness: 120 }) =>
   withSpring(_value, config);
@@ -159,14 +156,20 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
     }
   }, [disabled]);
 
+  const Button = (props: any) => {
+    if (typeof onValueChange === 'function' && !disabled) {
+      return (
+        <TouchableWithoutFeedback
+          {...props}
+          onPress={() => onValueChange(!value)}
+        />
+      );
+    }
+    return <View {...props} />;
+  };
+
   return (
-    <TouchableAnimated
-      onPress={() => {
-        if (typeof onValueChange === 'function' && !disabled) {
-          onValueChange(!value);
-        }
-      }}
-    >
+    <Button>
       <Reanimated.View
         style={[
           styles.switch,
@@ -248,7 +251,7 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
           ]}
         />
       </Reanimated.View>
-    </TouchableAnimated>
+    </Button>
   );
 };
 
