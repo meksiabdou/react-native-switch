@@ -81,6 +81,8 @@ const styles = StyleSheet.create({
 | circleInActiveColor | string    | #fff      |
 | textStyle           | TextStyle | undefined |
 | switchStyle         | ViewStyle | undefined |
+| circleChildrenActive| ReactElement | undefined |
+| circleChildrenInActive| ReactElement | undefined |
 
 ## Contributing
 

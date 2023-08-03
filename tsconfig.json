@@ -2,15 +2,19 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@meksiabdou/react-native-switch": ["./src/index"]
+      "@meksiabdou/react-native-switch": [
+        "./src/index"
+      ]
     },
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
     "esModuleInterop": true,
-    "importsNotUsedAsValues": "error",
+    // "importsNotUsedAsValues": "error",
     "forceConsistentCasingInFileNames": true,
     "jsx": "react",
-    "lib": ["esnext"],
+    "lib": [
+      "esnext"
+    ],
     "module": "esnext",
     "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,

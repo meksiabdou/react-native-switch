@@ -1,9 +1,14 @@
 import * as React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 import Switch from '@meksiabdou/react-native-switch';
 
 export default function App() {
-  const [value, setValue] = React.useState({ 0: true, 1: false, 2: false });
+  const [value, setValue] = React.useState({
+    0: true,
+    1: false,
+    2: false,
+    3: true,
+  });
 
   return (
     <View style={styles.container}>
@@ -14,8 +19,8 @@ export default function App() {
           onValueChange={(_value) => setValue({ ...value, 0: _value })}
           activeText="حلال"
           inActiveText="حرام"
-          backgroundInActive={"#ff0000"}
-          circleInActiveColor={"#fff"}
+          backgroundInActive={'#ff0000'}
+          circleInActiveColor={'#fff'}
           circleSize={25}
         />
       </View>
@@ -29,10 +34,11 @@ export default function App() {
           switchBorderRadius={30}
           switchPaddingLeft={2}
           switchPaddingRight={2}
-          switchStyle={{paddingVertical: 4}}
+          circleInActiveColor='#ff5454'
+          switchStyle={{ paddingVertical: 4 }}
         />
       </View>
-      <View>
+      <View style={{ marginVertical: 5 }}>
         <Switch
           value={value['2']}
           width={70}
@@ -44,6 +50,34 @@ export default function App() {
           disabled={false}
         />
       </View>
+      <View style={{ marginVertical: 5 }}>
+        <Switch
+          value={value['3']}
+          width={80}
+          onValueChange={(_value) => setValue({ ...value, 3: _value })}
+          activeText=""
+          inActiveText=""
+          circleSize={30}
+          textStyle={{ fontSize: 13 }}
+          disabled={false}
+          circleChildrenInActive={
+            <View>
+              <Image
+                source={require('./assets/images/dark.png')}
+                style={styles.icon}
+              />
+            </View>
+          }
+          circleChildrenActive={
+            <View>
+              <Image
+                source={require('./assets/images/light.png')}
+                style={styles.icon}
+              />
+            </View>
+          }
+        />
+      </View>
     </View>
   );
 }
@@ -53,6 +87,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: "#ccc",
+    backgroundColor: '#ccc',
+  },
+  icon: {
+    width: 28,
+    height: 28,
+    resizeMode: 'center',
   },
 });

@@ -43,6 +43,8 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
     switchPaddingRight,
     switchPaddingLeft,
     switchStyle,
+    circleChildrenActive,
+    circleChildrenInActive,
   } = IProps;
 
   const { isRTL } = I18nManager;
@@ -50,6 +52,8 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
   const textTranslateXInActive = useSharedValue<any>(0);
   const textTranslateXActive = useSharedValue<any>(0);
   const opacity = useSharedValue<number>(1);
+  const circleChildrenActiveOpacity = useSharedValue<number>(1);
+  const circleChildrenInActiveOpacity = useSharedValue<number>(0);
   const circleColor = useSharedValue<string | undefined>(circleInActiveColor);
 
   const [defaultWidth, setDefaultWidth] = useState<number>(
@@ -103,6 +107,18 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
     };
   });
 
+  const circleChildrenInActiveStyle = useAnimatedStyle(() => {
+    return {
+      opacity: circleChildrenInActiveOpacity.value,
+    };
+  });
+
+  const circleChildrenActiveStyle = useAnimatedStyle(() => {
+    return {
+      opacity: circleChildrenActiveOpacity.value,
+    };
+  });
+
   useEffect(() => {
     setDefaultWidth(isNumbre(width, 100));
   }, [width]);
@@ -135,6 +151,8 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
           stiffness: 100,
         });
       }
+      circleChildrenActiveOpacity.value = spring(1);
+      circleChildrenInActiveOpacity.value = spring(0);
     } else {
       circleTranslateX.value = spring(0, { damping: 15, stiffness: 120 });
       textTranslateXActive.value = spring(-(defaultWidth * factory));
@@ -145,6 +163,8 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
           stiffness: 100,
         });
       }
+      circleChildrenActiveOpacity.value = spring(0);
+      circleChildrenInActiveOpacity.value = spring(1);
     }
   }, [value, defaultWidth, defaultCircleSize, defaultPadding, isRTL]);
 
@@ -184,15 +204,9 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
       >
         <Reanimated.View
           style={[
+            styles.switchTextView,
+            styles.center,
             {
-              position: 'absolute',
-              display: 'flex',
-              right: 0,
-              left: 0,
-              top: 0,
-              bottom: 0,
-              justifyContent: 'center',
-              alignItems: 'center',
               width:
                 defaultWidth +
                 (defaultPadding.paddingLeft + defaultPadding.paddingRight) / 2,
@@ -213,15 +227,9 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
         </Reanimated.View>
         <Reanimated.View
           style={[
+            styles.switchTextView,
+            styles.center,
             {
-              position: 'absolute',
-              display: 'flex',
-              left: 0,
-              right: 0,
-              top: 0,
-              bottom: 0,
-              justifyContent: 'center',
-              alignItems: 'center',
               width: defaultWidth,
               backgroundColor: backgroundInActive,
             },
@@ -240,16 +248,34 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
         </Reanimated.View>
         <Reanimated.View
           style={[
+            styles.circleStyle,
             {
-              position: 'relative',
-              zIndex: 99,
               width: defaultCircleSize,
               height: defaultCircleSize,
               borderRadius: isNumbre(switchBorderRadius, 30),
             },
             circleStyle,
           ]}
-        />
+        >
+          <Reanimated.View
+            style={[
+              styles.circleChildren,
+              styles.center,
+              circleChildrenActiveStyle,
+            ]}
+          >
+            {circleChildrenActive}
+          </Reanimated.View>
+          <Reanimated.View
+            style={[
+              styles.circleChildren,
+              styles.center,
+              circleChildrenInActiveStyle,
+            ]}
+          >
+            {circleChildrenInActive}
+          </Reanimated.View>
+        </Reanimated.View>
       </Reanimated.View>
     </Button>
   );
@@ -283,10 +309,33 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     overflow: 'hidden',
   },
+  switchTextView: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+  },
   textStyle: {
     fontSize: 14,
     color: '#fff',
     marginHorizontal: 2,
+  },
+  circleStyle: {
+    position: 'relative',
+    zIndex: 99,
+  },
+  center: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  circleChildren: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
   },
 });
 

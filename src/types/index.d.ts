@@ -1,3 +1,4 @@
+import { ReactElement } from 'react';
 import type { TextStyle, ViewStyle } from 'react-native';
 
 export interface SwitchProps {
@@ -17,4 +18,6 @@ export interface SwitchProps {
   switchStyle?: ViewStyle;
   switchPaddingRight?: number;
   switchPaddingLeft?: number;
+  circleChildrenActive?: ReactElement;
+  circleChildrenInActive?: ReactElement;
 }
