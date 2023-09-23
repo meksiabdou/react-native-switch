@@ -68,6 +68,7 @@ const styles = StyleSheet.create({
 | width               | number    | 100       |
 | value               | boolean   | false     |
 | onValueChange       | function  | undefined |
+| onAnimationEnd      | function  | undefined |
 | disabled            | boolean   | false     |
 | activeText          | string    | ON        |
 | inActiveText        | string    | OFF       |

@@ -10,8 +10,15 @@ export default function App() {
     3: true,
   });
 
+  const [theme, setTheme] = React.useState('light');
+
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: theme === 'dark' ? '#666' : '#ccc' },
+      ]}
+    >
       <View>
         <Switch
           value={value['0']}
@@ -21,6 +28,7 @@ export default function App() {
           inActiveText="حرام"
           backgroundInActive={'#ff0000'}
           circleInActiveColor={'#fff'}
+          disabled={false}
           circleSize={25}
         />
       </View>
@@ -34,7 +42,7 @@ export default function App() {
           switchBorderRadius={30}
           switchPaddingLeft={2}
           switchPaddingRight={2}
-          circleInActiveColor='#ff5454'
+          circleInActiveColor="#ff5454"
           switchStyle={{ paddingVertical: 4 }}
         />
       </View>
@@ -76,6 +84,10 @@ export default function App() {
               />
             </View>
           }
+          onAnimationEnd={(_value) => {
+            setTheme(!_value ? 'dark' : 'light');
+            console.log('theme is ', !_value ? 'dark' : 'light');
+          }}
         />
       </View>
     </View>

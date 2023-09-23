@@ -5,6 +5,7 @@ export interface SwitchProps {
   disabled?: boolean;
   value: boolean;
   onValueChange?: (value: boolean) => void;
+  onAnimationEnd?: (value?: boolean) => void;
   width?: number;
   activeText?: string;
   inActiveText?: string;

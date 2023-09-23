@@ -3,17 +3,22 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   I18nManager,
-  View,
 } from 'react-native';
 import Reanimated, {
+  AnimationCallback,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
+  runOnJS,
 } from 'react-native-reanimated';
 import type { SwitchProps } from '../types';
 
-const spring = (_value: any, config: any = { damping: 20, stiffness: 120 }) =>
-  withSpring(_value, config);
+const spring = (
+  _value: any,
+  config: any = { damping: 20, stiffness: 120 },
+  callback?: AnimationCallback
+) =>
+  withSpring(_value, config, callback);
 
 const PADDINGHORIZONTAL = 2;
 
@@ -45,6 +50,7 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
     switchStyle,
     circleChildrenActive,
     circleChildrenInActive,
+    onAnimationEnd,
   } = IProps;
 
   const { isRTL } = I18nManager;
@@ -142,7 +148,6 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
         (defaultCircleSize +
           (defaultPadding.paddingLeft + defaultPadding.paddingRight)));
     if (value) {
-      circleTranslateX.value = spring(size, { damping: 15, stiffness: 120 });
       textTranslateXActive.value = spring(0);
       textTranslateXInActive.value = spring(factory * defaultWidth);
       if (circleActiveColor) {
@@ -153,8 +158,17 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
       }
       circleChildrenActiveOpacity.value = spring(1);
       circleChildrenInActiveOpacity.value = spring(0);
+      circleTranslateX.value = spring(
+        size,
+        { damping: 15, stiffness: 120 },
+        (finished?: boolean) => {
+          'worklet';
+          if (finished && onAnimationEnd) {
+            runOnJS(onAnimationEnd)(true);
+          }
+        }
+      );
     } else {
-      circleTranslateX.value = spring(0, { damping: 15, stiffness: 120 });
       textTranslateXActive.value = spring(-(defaultWidth * factory));
       textTranslateXInActive.value = spring(0);
       if (circleInActiveColor) {
@@ -165,6 +179,16 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
       }
       circleChildrenActiveOpacity.value = spring(0);
       circleChildrenInActiveOpacity.value = spring(1);
+      circleTranslateX.value = spring(
+        0,
+        { damping: 15, stiffness: 120 },
+        (finished?: boolean) => {
+          'worklet';
+          if (finished && onAnimationEnd) {
+            runOnJS(onAnimationEnd)(false);
+          }
+        }
+      );
     }
   }, [value, defaultWidth, defaultCircleSize, defaultPadding, isRTL]);
 
@@ -176,20 +200,14 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
     }
   }, [disabled]);
 
-  const Button = (props: any) => {
-    if (typeof onValueChange === 'function' && !disabled) {
-      return (
-        <TouchableWithoutFeedback
-          {...props}
-          onPress={() => onValueChange(!value)}
-        />
-      );
-    }
-    return <View {...props} />;
-  };
-
   return (
-    <Button>
+    <TouchableWithoutFeedback
+      onPress={() => {
+        if (!disabled) {
+          onValueChange?.(!value);
+        }
+      }}
+    >
       <Reanimated.View
         style={[
           styles.switch,
@@ -277,7 +295,7 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
           </Reanimated.View>
         </Reanimated.View>
       </Reanimated.View>
-    </Button>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -285,6 +303,7 @@ Switch.defaultProps = {
   disabled: false,
   value: false,
   onValueChange: undefined,
+  onAnimationEnd: undefined,
   activeText: 'ON',
   inActiveText: 'OFF',
   backgroundActive: '#249c00',
