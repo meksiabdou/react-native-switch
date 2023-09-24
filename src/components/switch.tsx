@@ -17,8 +17,7 @@ const spring = (
   _value: any,
   config: any = { damping: 20, stiffness: 120 },
   callback?: AnimationCallback
-) =>
-  withSpring(_value, config, callback);
+) => withSpring(_value, config, callback);
 
 const PADDINGHORIZONTAL = 2;
 
@@ -125,6 +124,54 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
     };
   });
 
+  const translateXSpringConfig = { damping: 15, stiffness: 300 };
+
+  const onActive = (size: number, factory: number) => {
+    textTranslateXActive.value = spring(0);
+    textTranslateXInActive.value = spring(factory * defaultWidth);
+    if (circleActiveColor) {
+      circleColor.value = spring(circleActiveColor, {
+        damping: 20,
+        stiffness: 100,
+      });
+    }
+    circleChildrenActiveOpacity.value = spring(1);
+    circleChildrenInActiveOpacity.value = spring(0);
+    circleTranslateX.value = spring(
+      size,
+      translateXSpringConfig,
+      (finished?: boolean) => {
+        'worklet';
+        if (finished && onAnimationEnd) {
+          runOnJS(onAnimationEnd)(true);
+        }
+      }
+    );
+  };
+
+  const onInActive = (_: number, factory: number) => {
+    textTranslateXActive.value = spring(-(defaultWidth * factory));
+    textTranslateXInActive.value = spring(0);
+    if (circleInActiveColor) {
+      circleColor.value = spring(circleInActiveColor, {
+        damping: 20,
+        stiffness: 100,
+      });
+    }
+    circleChildrenActiveOpacity.value = spring(0);
+    circleChildrenInActiveOpacity.value = spring(1);
+    circleTranslateX.value = spring(
+      0,
+      translateXSpringConfig,
+      (finished?: boolean) => {
+        'worklet';
+        if (finished && onAnimationEnd) {
+          runOnJS(onAnimationEnd)(false);
+        }
+      }
+    );
+  };
+
   useEffect(() => {
     setDefaultWidth(isNumbre(width, 100));
   }, [width]);
@@ -148,47 +195,9 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
         (defaultCircleSize +
           (defaultPadding.paddingLeft + defaultPadding.paddingRight)));
     if (value) {
-      textTranslateXActive.value = spring(0);
-      textTranslateXInActive.value = spring(factory * defaultWidth);
-      if (circleActiveColor) {
-        circleColor.value = spring(circleActiveColor, {
-          damping: 20,
-          stiffness: 100,
-        });
-      }
-      circleChildrenActiveOpacity.value = spring(1);
-      circleChildrenInActiveOpacity.value = spring(0);
-      circleTranslateX.value = spring(
-        size,
-        { damping: 15, stiffness: 120 },
-        (finished?: boolean) => {
-          'worklet';
-          if (finished && onAnimationEnd) {
-            runOnJS(onAnimationEnd)(true);
-          }
-        }
-      );
+      onActive(size, factory);
     } else {
-      textTranslateXActive.value = spring(-(defaultWidth * factory));
-      textTranslateXInActive.value = spring(0);
-      if (circleInActiveColor) {
-        circleColor.value = spring(circleInActiveColor, {
-          damping: 20,
-          stiffness: 100,
-        });
-      }
-      circleChildrenActiveOpacity.value = spring(0);
-      circleChildrenInActiveOpacity.value = spring(1);
-      circleTranslateX.value = spring(
-        0,
-        { damping: 15, stiffness: 120 },
-        (finished?: boolean) => {
-          'worklet';
-          if (finished && onAnimationEnd) {
-            runOnJS(onAnimationEnd)(false);
-          }
-        }
-      );
+      onInActive(size, factory);
     }
   }, [value, defaultWidth, defaultCircleSize, defaultPadding, isRTL]);
 
