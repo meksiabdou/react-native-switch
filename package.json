@@ -1,6 +1,6 @@
 {
   "name": "@meksiabdou/react-native-switch",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Customisable switch component for React Native",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",

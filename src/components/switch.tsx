@@ -31,25 +31,25 @@ const isNumbre = (value: any, defaultValue = 0) => {
 
 const Switch = (IProps: SwitchProps): JSX.Element => {
   const {
-    value,
-    activeText,
-    inActiveText,
-    backgroundActive,
-    backgroundInActive,
-    circleActiveColor,
-    circleInActiveColor,
-    circleSize,
-    width,
-    onValueChange,
-    switchBorderRadius,
+    value = false,
+    activeText = 'ON',
+    inActiveText = 'OFF',
+    backgroundActive = '#249c00',
+    backgroundInActive = '#333',
+    circleActiveColor = '#fff',
+    circleInActiveColor = '#fff',
+    circleSize = 30,
+    width = 100,
+    onValueChange = undefined,
+    switchBorderRadius = 30,
     textStyle,
-    disabled,
-    switchPaddingRight,
-    switchPaddingLeft,
+    disabled = false,
+    switchPaddingRight = PADDINGHORIZONTAL,
+    switchPaddingLeft = PADDINGHORIZONTAL,
     switchStyle,
     circleChildrenActive,
     circleChildrenInActive,
-    onAnimationEnd,
+    onAnimationEnd = undefined,
   } = IProps;
 
   const { isRTL } = I18nManager;
@@ -308,23 +308,6 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
   );
 };
 
-Switch.defaultProps = {
-  disabled: false,
-  value: false,
-  onValueChange: undefined,
-  onAnimationEnd: undefined,
-  activeText: 'ON',
-  inActiveText: 'OFF',
-  backgroundActive: '#249c00',
-  backgroundInActive: '#333',
-  circleActiveColor: '#fff',
-  circleInActiveColor: '#fff',
-  circleSize: 30,
-  switchBorderRadius: 30,
-  width: 100,
-  switchPaddingRight: PADDINGHORIZONTAL,
-  switchPaddingLeft: PADDINGHORIZONTAL,
-};
 
 const styles = StyleSheet.create({
   switch: {
