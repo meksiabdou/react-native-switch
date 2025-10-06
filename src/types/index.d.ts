@@ -7,8 +7,8 @@ export interface SwitchProps {
   onValueChange?: (value: boolean) => void;
   onAnimationEnd?: (value?: boolean) => void;
   width?: number;
-  activeText?: string;
-  inActiveText?: string;
+  activeText?: string | null;
+  inActiveText?: string | null;
   circleSize?: number;
   switchBorderRadius?: number;
   backgroundActive?: string;

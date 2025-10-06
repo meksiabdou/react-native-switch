@@ -1,7 +1,7 @@
 {
   "name": "@meksiabdou/react-native-switch",
-  "version": "1.0.8",
-  "description": "Customisable switch component for React Native",
+  "version": "1.1.0",
+  "description": "Customizable switch component for React Native",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/index.d.ts",
@@ -74,7 +74,7 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "react-native-reanimated" : "*"
+    "react-native-reanimated": "*"
   },
   "jest": {
     "preset": "react-native",
@@ -150,5 +150,5 @@
       ]
     ]
   },
-  "dependencies": {}
+  "packageManager": "yarn@4.5.3+sha512.3003a14012e2987072d244c720506549c1aab73ee728208f1b2580a9fd67b92d61ba6b08fe93f6dce68fd771e3af1e59a0afa28dd242dd0940d73b95fedd4e90"
 }

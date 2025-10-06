@@ -10,18 +10,25 @@ import Reanimated, {
   useSharedValue,
   withSpring,
   runOnJS,
+  withTiming,
 } from 'react-native-reanimated';
 import type { SwitchProps } from '../types';
 
 const spring = (
   _value: any,
-  config: any = { damping: 20, stiffness: 120 },
+  config: any = { damping: 15, stiffness: 120 },
   callback?: AnimationCallback
 ) => withSpring(_value, config, callback);
 
+const timing = (
+  _value: any,
+  config: any = { duration: 350 },
+  callback?: AnimationCallback
+) => withTiming(_value, config, callback);
+
 const PADDINGHORIZONTAL = 2;
 
-const isNumbre = (value: any, defaultValue = 0) => {
+const isNumber = (value: any, defaultValue = 0) => {
   value = Number(value);
   if (typeof value === 'number' && !isNaN(value) && value !== null) {
     return value;
@@ -29,27 +36,27 @@ const isNumbre = (value: any, defaultValue = 0) => {
   return defaultValue;
 };
 
-const Switch = (IProps: SwitchProps): JSX.Element => {
+const Switch = (IProps: SwitchProps): React.JSX.Element => {
   const {
-    value,
-    activeText,
-    inActiveText,
-    backgroundActive,
-    backgroundInActive,
-    circleActiveColor,
-    circleInActiveColor,
-    circleSize,
-    width,
-    onValueChange,
-    switchBorderRadius,
+    value = false,
+    activeText = 'ON',
+    inActiveText = 'OFF',
+    backgroundActive = '#249c00',
+    backgroundInActive = '#333',
+    circleActiveColor = '#fff',
+    circleInActiveColor = '#fff',
+    circleSize = 30,
+    width = 100,
+    onValueChange = undefined,
+    switchBorderRadius = 30,
     textStyle,
-    disabled,
-    switchPaddingRight,
-    switchPaddingLeft,
+    disabled = false,
+    switchPaddingRight = PADDINGHORIZONTAL,
+    switchPaddingLeft = PADDINGHORIZONTAL,
     switchStyle,
     circleChildrenActive,
     circleChildrenInActive,
-    onAnimationEnd,
+    onAnimationEnd = undefined,
   } = IProps;
 
   const { isRTL } = I18nManager;
@@ -62,17 +69,17 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
   const circleColor = useSharedValue<string | undefined>(circleInActiveColor);
 
   const [defaultWidth, setDefaultWidth] = useState<number>(
-    isNumbre(width, 100)
+    isNumber(width, 100)
   );
   const [defaultCircleSize, setDefaultCircleSize] = useState<number>(
-    isNumbre(circleSize, 30)
+    isNumber(circleSize, 30)
   );
   const [defaultPadding, setDefaultPadding] = useState<{
     paddingLeft: number;
     paddingRight: number;
   }>({
-    paddingLeft: isNumbre(switchPaddingLeft, PADDINGHORIZONTAL),
-    paddingRight: isNumbre(switchPaddingRight, PADDINGHORIZONTAL),
+    paddingLeft: isNumber(switchPaddingLeft, PADDINGHORIZONTAL),
+    paddingRight: isNumber(switchPaddingRight, PADDINGHORIZONTAL),
   });
 
   const circleStyle = useAnimatedStyle(() => {
@@ -127,8 +134,8 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
   const translateXSpringConfig = { damping: 15, stiffness: 300 };
 
   const onActive = (size: number, factory: number) => {
-    textTranslateXActive.value = spring(0);
-    textTranslateXInActive.value = spring(factory * defaultWidth);
+    textTranslateXActive.value = timing(0);
+    textTranslateXInActive.value = timing(factory * defaultWidth);
     if (circleActiveColor) {
       circleColor.value = spring(circleActiveColor, {
         damping: 20,
@@ -150,8 +157,8 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
   };
 
   const onInActive = (_: number, factory: number) => {
-    textTranslateXActive.value = spring(-(defaultWidth * factory));
-    textTranslateXInActive.value = spring(0);
+    textTranslateXActive.value = timing(-(defaultWidth * factory));
+    textTranslateXInActive.value = timing(0);
     if (circleInActiveColor) {
       circleColor.value = spring(circleInActiveColor, {
         damping: 20,
@@ -173,18 +180,18 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
   };
 
   useEffect(() => {
-    setDefaultWidth(isNumbre(width, 100));
+    setDefaultWidth(isNumber(width, 100));
   }, [width]);
 
   useEffect(() => {
     setDefaultPadding({
-      paddingLeft: isNumbre(switchPaddingLeft, PADDINGHORIZONTAL),
-      paddingRight: isNumbre(switchPaddingRight, PADDINGHORIZONTAL),
+      paddingLeft: isNumber(switchPaddingLeft, PADDINGHORIZONTAL),
+      paddingRight: isNumber(switchPaddingRight, PADDINGHORIZONTAL),
     });
   }, [switchPaddingLeft, switchPaddingRight]);
 
   useEffect(() => {
-    setDefaultCircleSize(isNumbre(circleSize, 30));
+    setDefaultCircleSize(isNumber(circleSize, 30));
   }, [circleSize]);
 
   useEffect(() => {
@@ -199,6 +206,7 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
     } else {
       onInActive(size, factory);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value, defaultWidth, defaultCircleSize, defaultPadding, isRTL]);
 
   useEffect(() => {
@@ -207,6 +215,7 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
     } else {
       opacity.value = spring(1);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [disabled]);
 
   return (
@@ -221,7 +230,7 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
         style={[
           styles.switch,
           {
-            borderRadius: isNumbre(switchBorderRadius, 30),
+            borderRadius: isNumber(switchBorderRadius, 30),
             width: defaultWidth,
           },
           switchStyle,
@@ -279,7 +288,7 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
             {
               width: defaultCircleSize,
               height: defaultCircleSize,
-              borderRadius: isNumbre(switchBorderRadius, 30),
+              borderRadius: isNumber(switchBorderRadius, 30),
             },
             circleStyle,
           ]}
@@ -308,23 +317,6 @@ const Switch = (IProps: SwitchProps): JSX.Element => {
   );
 };
 
-Switch.defaultProps = {
-  disabled: false,
-  value: false,
-  onValueChange: undefined,
-  onAnimationEnd: undefined,
-  activeText: 'ON',
-  inActiveText: 'OFF',
-  backgroundActive: '#249c00',
-  backgroundInActive: '#333',
-  circleActiveColor: '#fff',
-  circleInActiveColor: '#fff',
-  circleSize: 30,
-  switchBorderRadius: 30,
-  width: 100,
-  switchPaddingRight: PADDINGHORIZONTAL,
-  switchPaddingLeft: PADDINGHORIZONTAL,
-};
 
 const styles = StyleSheet.create({
   switch: {
