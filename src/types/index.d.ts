@@ -21,4 +21,5 @@ export interface SwitchProps {
   switchPaddingLeft?: number;
   circleChildrenActive?: ReactElement;
   circleChildrenInActive?: ReactElement;
+  onPress?: () => void;
 }

@@ -57,6 +57,7 @@ const Switch = (IProps: SwitchProps): React.JSX.Element => {
     circleChildrenActive,
     circleChildrenInActive,
     onAnimationEnd = undefined,
+    onPress,
   } = IProps;
 
   const { isRTL } = I18nManager;
@@ -223,6 +224,9 @@ const Switch = (IProps: SwitchProps): React.JSX.Element => {
       onPress={() => {
         if (!disabled) {
           onValueChange?.(!value);
+          if(typeof onPress === 'function') {
+            onPress();
+          }
         }
       }}
     >
